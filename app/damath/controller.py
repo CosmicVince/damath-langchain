@@ -1,9 +1,9 @@
 from flask import request, jsonify, session, render_template
-from langchain_ollama.llms import OllamaLLM
+from llmlangchain.langchain import LLMManager
 from . import damath
 
 # Global LLM instance
-global_llm = None
+llm_manager = LLMManager()
 
 @damath.route('/hello/')
 @damath.route('/hello/<name>')
@@ -13,11 +13,15 @@ def hello(name=None):
 @damath.route('/init-llm', methods=['POST'])
 def initialize_llm():
     try:
-        global global_llm
         data = request.get_json()
         model_name = data.get('model', 'llama3.2')
 
-        global_llm = OllamaLLM(model=model_name)
+        success = llm_manager.initialize_llm(model_name)
+        if not success:
+            return jsonify({
+                'success': False,
+                'error': 'Failed to initialize LLM'
+            }), 500
 
         return jsonify({
             'success': True,
@@ -29,17 +33,10 @@ def initialize_llm():
             'error': str(e)
         }), 500
 
+
 @damath.route('/ask', methods=['POST'])
 def ask_llm():
     try:
-        global global_llm
-        if global_llm is None:
-            return jsonify({
-                'success': False,
-                'error': 'LLM not initialized. Please call /init-llm first'
-            }), 400
-
-        # Get the prompt from request JSON
         data = request.get_json()
         if not data or 'prompt' not in data:
             return jsonify({
@@ -48,13 +45,17 @@ def ask_llm():
             }), 400
 
         prompt = data['prompt']
-        response = global_llm.invoke(prompt)
+        response = llm_manager.get_response(prompt)
 
         return jsonify({
             'success': True,
             'response': response
         })
-
+    except ValueError as ve:
+        return jsonify({
+            'success': False,
+            'error': str(ve)
+        }), 400
     except Exception as e:
         return jsonify({
             'success': False,

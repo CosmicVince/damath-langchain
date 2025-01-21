@@ -45,12 +45,49 @@ def ask_llm():
             }), 400
 
         prompt = data['prompt']
-        response = llm_manager.get_response(prompt)
+        result = llm_manager.get_response(prompt)
+        response = result.content
+        print(response)
 
         return jsonify({
             'success': True,
             'response': response
         })
+    except ValueError as ve:
+        return jsonify({
+            'success': False,
+            'error': str(ve)
+        }), 400
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+
+
+@damath.route('/bstate_to_valid', methods=['POST'])
+def boardstate_to_validmoves():
+    try:
+        data = request.get_json()
+        if not data or 'board_state' not in data:
+            return jsonify({
+                'success': False,
+                'error': 'Please provide a board_state in the request body'
+            }), 400
+
+        board_state = data['board_state']
+        response = llm_manager.board_to_valid(board_state)
+        print(response)
+        response = response.content
+
+        return response
+
+        # return jsonify({
+        #     'success': True,
+        #     'response': response
+        # })
     except ValueError as ve:
         return jsonify({
             'success': False,

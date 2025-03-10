@@ -1,5 +1,5 @@
 from flask import request, jsonify, session, render_template
-from llmlangchain.langchain import LLMManager
+from llmlangchain.langchainagent import LLMManager
 from . import damath
 
 # Global LLM instance
@@ -28,6 +28,7 @@ def initialize_llm():
             'message': f'LLM initialized with model: {model_name}'
         })
     except Exception as e:
+        
         return jsonify({
             'success': False,
             'error': str(e)
@@ -46,8 +47,8 @@ def ask_llm():
 
         prompt = data['prompt']
         result = llm_manager.get_response(prompt)
-        response = result.content
-        print(response)
+        response = result
+        print(result)
 
         return jsonify({
             'success': True,

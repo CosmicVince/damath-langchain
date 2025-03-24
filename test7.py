@@ -37,8 +37,8 @@ def func7(board_state):
 def func8(piece):
     capmoves = []
     dia = [7, 9, -7, -9]
+    src_ind = piece.index
     for d in dia:
-        src_ind = piece.index
         capt_ind = src_ind + d
         holder = []
         while 0 <= capt_ind < len(board_state) and isinstance(board_state[capt_ind], list):
@@ -56,10 +56,11 @@ def func8(piece):
                 break
             else:
                 break
-        capmoves.append((holder, capt_ind))
+        capmoves.append(tuple(holder))
     return piece.index, capmoves
 
 
+# Example usage:
 board_state = [
         [Piece('r', -112, is_dama=False), '*'], 'X', [None, '/'], 'X', [None, '-'], 'X', [None, '+'], 'X', 'X',
         [Piece('b', 0, is_dama=False), '/'], 'X', [None, '*'], 'X', [None, '+'], 'X',
@@ -72,23 +73,23 @@ board_state = [
         [None, '-'], 'X', [None, '/'], 'X', [Piece('r', 6, is_dama=False), '*']
         ]
 
-a = list(board_state)
-for index, i in enumerate(a):
-    if isinstance(i[0], Piece):
-        temp = i[0].value
-        # if len(temp) == 1:
-        #     temp = "0" + temp
+# a = list(board_state)
+# for index, i in enumerate(a):
+#     if isinstance(i[0], Piece):
+#         temp = i[0].value
+#         # if len(temp) == 1:
+#         #     temp = "0" + temp
 
-        if i[0].color == "r":
-            a[index] = f"{index}{i[0].color}{'t' if i[0].is_dama == True else 'f'}"
-        else:
-            a[index] = f"{index}{i[0].color}{'t' if i[0].is_dama == True else 'f'}"
+#         if i[0].color == "r":
+#             a[index] = f"{index}{i[0].color}{'t' if i[0].is_dama == True else 'f'}"
+#         else:
+#             a[index] = f"{index}{i[0].color}{'t' if i[0].is_dama == True else 'f'}"
 
-    elif i == "X":
-        pass
-    elif i[0] == None:
-        a[index] = "___"
-for i in range(0, len(a), 8):
-    print(a[i : i + 8])
+#     elif i == "X":
+#         pass
+#     elif i[0] == None:
+#         a[index] = "___"
+# for i in range(0, len(a), 8):
+#     print(a[i : i + 8])
 
 print(func7(board_state))

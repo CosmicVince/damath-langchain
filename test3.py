@@ -31,7 +31,7 @@ def func1(board_state):
                 piece.index = i
                 key, value = func2(piece)
                 valid_moves.update({key: value})
-    print(valid_moves)
+    return valid_moves
 
 
 def func2(piece):
@@ -61,4 +61,4 @@ board_state = [
         [None, '-'], 'X', [None, '/'], 'X', [None, '*']
         ]
 
-func1(board_state)
+print(func1(board_state))
